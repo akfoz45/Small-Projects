@@ -147,12 +147,20 @@ def show_leaderboard():
         leaderboard_turtle.goto(0, 120 - i * 30)
         leaderboard_turtle.write(f"{i}. {s}", align="center", font=FONT)
 
+    leaderboard_turtle.goto(0, -100)
+    leaderboard_turtle.write("Press SPACE to Start", align="center", font=FONT)
+
 
 def start_game():
+    global score, time_left, game_over
+    score = 0
+    time_left = 10
+    game_over = False
+
+    leaderboard_turtle.clear()
+
     turtle.tracer(0)
 
-    show_leaderboard()
-    
     setup_score_turtle()
     setup_turtles()
     hide_turtles()
@@ -161,5 +169,8 @@ def start_game():
 
     turtle.tracer(1)
 
-start_game()
+show_leaderboard()
+screen.listen()
+screen.onkey(start_game, "space")
+
 turtle.mainloop()
