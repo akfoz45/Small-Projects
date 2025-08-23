@@ -20,6 +20,10 @@ score_turtle = turtle.Turtle()
 #coutdown turtle
 countdown_turtle = turtle.Turtle()
 
+#leaderboard turtle
+leaderboard_turtle = turtle.Turtle()
+
+
 def setup_score_turtle():
     score_turtle.hideturtle()
     score_turtle.color("dark blue")
@@ -118,6 +122,30 @@ def countdown():
         countdown_turtle.clear()
         hide_turtles()
         countdown_turtle.write(arg="Game Over", move=False, align="center", font=FONT)
+
+def save_record():
+    with open("scores.txt", "a") as file:
+        file.write(str(score) + "\n")
+
+def show_leaderboard():
+    try:
+        with open("scores.txt", "r") as file:
+            scores = [int(line.strip()) for line in file if line.strip().isdigit()]
+    except FileNotFoundError:
+        scores = []
+
+    scores = sorted(scores, reverse=True)
+
+    leaderboard_turtle.hideturtle()
+    leaderboard_turtle.penup()
+    leaderboard_turtle.goto(0, 50)
+    leaderboard_turtle.color("black")
+    leaderboard_turtle.write("Leaderboard", align="center", font=FONT)
+
+    for i, s in enumerate(scores, start=1):
+        leaderboard_turtle.goto(0, 50 - i * 30)
+        leaderboard_turtle.write(f"{i}. {s}", align="center", font=FONT)
+
 
 def start_game():
     turtle.tracer(0)
