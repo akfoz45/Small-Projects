@@ -40,23 +40,18 @@ def make_turtle(x, y):
     t.shapesize(2, 2)
     t.goto(x * 10, y * 10)
 
-    kind = random.choice(["normal", "bonus", "penalty"])
-    if kind == "bonus":
-        t.color("gold")
-    elif kind == "penalty":
-        t.color("red")
-    else:
-        t.color("dark green")
+    t.color("dark green")
+    t.kind = "normal"
 
     def handle_click(x, y):
         global score, time_left
-        if kind == "normal":
+        if t.kind == "normal":
             score += 1
             time_left += 0.5
-        elif kind == "bonus":
+        elif t.kind == "bonus":
             score += 5
             time_left += 2
-        elif kind == "penalty":
+        elif t.kind == "penalty":
             score -= 3
             time_left -= 2
 
@@ -98,6 +93,7 @@ def show_turtles_randomly():
         elif kind == "normal":
             chosen.color("dark green")
 
+        chosen.kind = kind
         chosen.showturtle()
 
         speed = max(200, 800 - (score * 30))
