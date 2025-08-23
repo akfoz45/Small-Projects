@@ -128,28 +128,31 @@ def save_record():
         file.write(str(score) + "\n")
 
 def show_leaderboard():
+    leaderboard_turtle.clear()
     try:
         with open("scores.txt", "r") as file:
             scores = [int(line.strip()) for line in file if line.strip().isdigit()]
     except FileNotFoundError:
         scores = []
 
-    scores = sorted(scores, reverse=True)
+    scores = sorted(scores, reverse=True)[:5]
 
     leaderboard_turtle.hideturtle()
     leaderboard_turtle.penup()
-    leaderboard_turtle.goto(0, 50)
+    leaderboard_turtle.goto(0, 120)
     leaderboard_turtle.color("black")
     leaderboard_turtle.write("Leaderboard", align="center", font=FONT)
 
     for i, s in enumerate(scores, start=1):
-        leaderboard_turtle.goto(0, 50 - i * 30)
+        leaderboard_turtle.goto(0, 120 - i * 30)
         leaderboard_turtle.write(f"{i}. {s}", align="center", font=FONT)
 
 
 def start_game():
     turtle.tracer(0)
 
+    show_leaderboard()
+    
     setup_score_turtle()
     setup_turtles()
     hide_turtles()
