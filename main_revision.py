@@ -12,17 +12,17 @@ time_left = 10
 #turtle list
 turtle_list = []
 
-turtle.hideturtle()
-
 #score turtle
 score_turtle = turtle.Turtle()
+score_turtle.hideturtle()
 
 #coutdown turtle
 countdown_turtle = turtle.Turtle()
+countdown_turtle.hideturtle()
 
 #leaderboard turtle
 leaderboard_turtle = turtle.Turtle()
-
+leaderboard_turtle.hideturtle()
 
 def setup_score_turtle():
     score_turtle.hideturtle()
@@ -33,6 +33,7 @@ def setup_score_turtle():
     y = top_height * 0.8
 
     score_turtle.setpos(0, y)
+    score_turtle.clear()
     score_turtle.write(arg="Score 0", move=False, align="center", font=FONT)
 
 
@@ -104,7 +105,7 @@ def show_turtles_randomly():
         screen.ontimer(show_turtles_randomly, speed)
 
 def countdown():
-    global game_over
+    global game_over, time_left
     countdown_turtle.hideturtle()
     countdown_turtle.penup()
 
@@ -114,6 +115,7 @@ def countdown():
     countdown_turtle.clear()
 
     if time_left > 0:
+        time_left -= 1
         countdown_turtle.clear()
         countdown_turtle.write(arg="Time: {}".format(time_left), move=False, align="center", font=FONT)
         screen.ontimer(lambda: countdown(), 1000)
@@ -122,6 +124,8 @@ def countdown():
         countdown_turtle.clear()
         hide_turtles()
         countdown_turtle.write(arg="Game Over", move=False, align="center", font=FONT)
+        save_record()
+        show_leaderboard()
 
 def save_record():
     with open("scores.txt", "a") as file:
@@ -169,7 +173,13 @@ def start_game():
 
     turtle.tracer(1)
 
+
+turtle.tracer(0)
+
 show_leaderboard()
+
+turtle.tracer(1)
+
 screen.listen()
 screen.onkey(start_game, "space")
 
