@@ -7,6 +7,7 @@ screen.title("Catch the Turtle")
 FONT = ("Arial", 25, "normal")
 score = 0
 game_over = False
+time_left = 10
 
 #turtle list
 turtle_list = []
@@ -33,22 +34,38 @@ def setup_score_turtle():
 
 def make_turtle(x, y):
     t = turtle.Turtle()
-
-    def handle_click(x, y):
-        global score
-        score += 1
-        score_turtle.clear()
-        score_turtle.write(arg="Score {}".format(score), move=False, align="center", font=FONT)
-
-        #print(x, y)
-
-    t.onclick(handle_click)
-    turtle.speed(0)
+    t.speed(0)
     t.penup()
     t.shape("turtle")
-    t.shapesize(2,2)
-    t.color("dark green")
-    t.goto(x * 10, y* 10)
+    t.shapesize(2, 2)
+    t.goto(x * 10, y * 10)
+
+    kind = random.choice(["normal", "bonus", "penalty"])
+    if kind == "bonus":
+        t.color("gold")
+    elif kind == "penalty":
+        t.color("red")
+    else:
+        t.color("dark green")
+
+    def handle_click(x, y):
+        global score, time_left
+        if kind == "normal":
+            score += 1
+            time_left += 0.5
+        elif kind == "bonus":
+            score += 5
+            time_left += 2
+        elif kind == "penalty":
+            score -= 3
+            time_left -= 2
+
+        if time_left <= 0:
+            time_left = 0
+        score_turtle.clear()
+        score_turtle.write(arg="Score: {}".format(score), move=False, align="center", font=FONT)
+
+    t.onclick(handle_click)
     turtle_list.append(t)
 
 x_coordinates = [-30, -15, 0, 15, 30]
@@ -67,12 +84,26 @@ def hide_turtles():
 def show_turtles_randomly():
     if not game_over:
         hide_turtles()
-        random.choice(turtle_list).showturtle()
+        chosen = random.choice(turtle_list)
 
-        speed = max(100, 800 - (score * 20))
+        kind = random.choices(
+            ["normal", "bonus", "penalty"],
+            weights=[70, 20, 10],
+            k=1
+        )[0]
+        if kind == "bonus":
+            chosen.color("gold")
+        elif kind == "penalty":
+            chosen.color("red")
+        elif kind == "normal":
+            chosen.color("dark green")
+
+        chosen.showturtle()
+
+        speed = max(200, 800 - (score * 30))
         screen.ontimer(show_turtles_randomly, speed)
 
-def countdown(time):
+def countdown():
     global game_over
     countdown_turtle.hideturtle()
     countdown_turtle.penup()
@@ -82,10 +113,10 @@ def countdown(time):
     countdown_turtle.setpos(0, y - 30)
     countdown_turtle.clear()
 
-    if time > 0:
+    if time_left > 0:
         countdown_turtle.clear()
-        countdown_turtle.write(arg="Time: {}".format(time), move=False, align="center", font=FONT)
-        screen.ontimer(lambda: countdown(time - 1), 1000)
+        countdown_turtle.write(arg="Time: {}".format(time_left), move=False, align="center", font=FONT)
+        screen.ontimer(lambda: countdown(), 1000)
     else:
         game_over = True
         countdown_turtle.clear()
@@ -99,7 +130,7 @@ def start_game():
     setup_turtles()
     hide_turtles()
     show_turtles_randomly()
-    countdown(20)
+    countdown()
 
     turtle.tracer(1)
 
